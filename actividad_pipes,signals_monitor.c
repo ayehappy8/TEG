@@ -31,14 +31,12 @@ void ini_monitor(Monitor *monitor){
     
 }
 void* monitor_funcion(){
-    int auto_id;
-    read(tuneles[tunel_id]->recurso[0], &auto_id, sizeof(int));
-    printf("el Auto solicitante es %d\n",auto_id);
+    
+    printf("el Auto solicitante es \n");
 
 }
 
 void entrado_tunel(tunel_id, auto_id){
-    write(tuneles[tunel_id]->recurso[1], auto_id, sizeof(int));
     
 
     pthread_mutex_lock(&tuneles[tunel_id].mutex);
@@ -51,7 +49,6 @@ void entrado_tunel(tunel_id, auto_id){
 
 void saliendo_tunel(tunel_id, auto_id){
     char buffer[BUFFER_SIZE];
-    read(tuneles->recurso[0], buffer, sizeof(buffer));
     printf("Saliendo recive el mensaje que %s", buffer);
 }
 
