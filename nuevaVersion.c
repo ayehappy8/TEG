@@ -41,11 +41,11 @@ void ini_monitor(Monitor *monitor) {
 }
 //Inicializacion de monitor
 //Tunel
-void *Tunel_ED(Monitor *monitor_tunel){
-    char tunel_id[]="ED";
+void *Tunel_DE(Monitor *monitor_tunel){
+    char tunel_id[]="DE";
 while (1) {
     char buffer[BUFFER_SIZE];
-    read(tunel_ED[0], buffer, sizeof(buffer));
+    read(tunel_DE[0], buffer, sizeof(buffer));
     printf("Tunel %s : Mensaje recibido desde del Auto: %s\n",tunel_id, buffer);
     //pthread_mutex_lock(&monitor_tunel->mutex);
     
@@ -53,11 +53,11 @@ while (1) {
         monitor_tunel->ocupado = 1;
         printf("Tunel %s: Enviando respuesta al  Auto\n", tunel_id);
         char reply[] = "Esta Libre";
-        write(tunel_DE[1], reply, sizeof(reply));
+        write(tunel_ED[1], reply, sizeof(reply));
       //  pthread_cond_signal(&monitor_tunel->condicion);
     } else {
         char reply[] = "Esta ocupado";
-        write(tunel_DE[1], reply, sizeof(reply));
+        write(tunel_ED[1], reply, sizeof(reply));
         // pthread_cond_wait(&monitor_tunel->condicion, &monitor_tunel->mutex);
     }
 }
@@ -119,20 +119,20 @@ while (1) {
 }
 
 //Tunel
-//Acciones autos ED
-void *Auto_hilo_ED(Monitor *monitor_tunel) {
-    char tunel_id[]="ED";
+//Acciones autos DE
+void *Auto_hilo_DE(Monitor *monitor_tunel) {
+    char tunel_id[]="DE";
     pthread_t auto_id = pthread_self();
   //  int auto_id = *((int *)arg);
     //Tunel_ED(&monitor_tunel, auto_id);
     pthread_mutex_lock(&monitor_tunel->mutex);
     char msj[] = "¿Esta Ocupado?";
     printf("El Auto %lu: Enviando mensaje al Tunel %s\n",auto_id, tunel_id );
-    write(tunel_ED[1], msj, sizeof(msj));
+    write(tunel_DE[1], msj, sizeof(msj));
     // Respuesta desde el Canal B
 
     char buffer[BUFFER_SIZE];
-    read(tunel_DE[0], buffer, sizeof(buffer));
+    read(tunel_ED[0], buffer, sizeof(buffer));
     printf("El Auto:%lu recibio el mensaje que el tunel %s %s\n",auto_id,tunel_id ,buffer);
         printf("-------------------------------------------------------------\n");
         printf("El auto %lu Pasando por el tunel %s\n", auto_id, tunel_id);
@@ -237,7 +237,7 @@ int main() {
     for (int i = 0; i < C_AUTOS; i++) {
       //  autos_id[i] = i + 1;
         if(i<=4){
-        pthread_create(&autos[i], NULL, Auto_hilo_ED, (void *)&monitor_tunel[0]);
+        pthread_create(&autos[i], NULL, Auto_hilo_DE, (void *)&monitor_tunel[0]);
         }else if (i >4 && i %2 == 0){
             pthread_create(&autos[i], NULL, Auto_hilo_AC, (void *)&monitor_tunel[1]);
         }else{
@@ -245,18 +245,18 @@ int main() {
         }
     }
 
-    pthread_t tunel_ED;
+    pthread_t tunel_DE, tunel_AC, tunel_BC;
 
-        pthread_create(&tunel_ED, NULL, Tunel_ED, (void *)&monitor_tunel[0]);
-        pthread_create(&tunel_ED, NULL, Tunel_AC, (void *)&monitor_tunel[1]);
-        pthread_create(&tunel_ED, NULL, Tunel_BC, (void *)&monitor_tunel[2]);
+        pthread_create(&tunel_DE, NULL, Tunel_DE, (void *)&monitor_tunel[0]);
+        pthread_create(&tunel_AC, NULL, Tunel_AC, (void *)&monitor_tunel[1]);
+        pthread_create(&tunel_BC, NULL, Tunel_BC, (void *)&monitor_tunel[2]);
 
       //  pthread_join(tunel_ED, NULL);
 
     for (int i = 0; i < C_AUTOS; ++i) {
         pthread_join(autos[i], NULL);
     }
-    printf("La cantidad de autos que pasasaron por el tunel ED fueron %d\n", monitor_tunel[0].contador);
+    printf("La cantidad de autos que pasasaron por el tunel DE fueron %d\n", monitor_tunel[0].contador);
     printf("La cantidad de autos que pasasaron por el tunel AC fueron %d\n", monitor_tunel[1].contador);
     printf("La cantidad de autos que pasasaron por el tunel BC fueron %d\n", monitor_tunel[2].contador);
 
@@ -271,8 +271,6 @@ int main() {
    // close(tunel_ED[0]);
    // close(tunel_ED[1]); printf("La cantidad de autos que pasasaron por el tunel ED fueron %d\n", monitor_tunel->contador);
   
-    close(tunel_DE[0]);
-    close(tunel_DE[1]);
 
 
 
