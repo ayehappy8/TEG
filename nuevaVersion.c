@@ -205,7 +205,7 @@ void *Auto_hilo_BC(Monitor *monitor_tunel) {
     printf("-------------------------------------------------------------\n");
         printf("El auto %lu Pasando por el tunel %s\n", auto_id, tunel_id);
     printf("-------------------------------------------------------------\n");
-        sleep(4);
+        sleep(5);
     printf("-------------------------------------------------------------\n");    
         printf("El auto %lu Saliendo por el tunel %s\n", auto_id, tunel_id);
     printf("-------------------------------------------------------------\n");    
