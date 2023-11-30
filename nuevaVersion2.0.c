@@ -267,7 +267,7 @@ int main() {
 
   //datos estadisticos
   float totalautos = monitor_tunel[0].contador+monitor_tunel[1].contador+monitor_tunel[2].contador;
-    printf("Tunel DE: %.2f%\nTunel AC: %.2f %\nTunel BC: %.2f %\nEl total de autos que pasaron fue: %d\n", monitor_tunel[0].contador/totalautos*100,(monitor_tunel[1].contador/totalautos*100),(monitor_tunel[2].contador/totalautos*100),totalautos);
+    printf("Tunel DE: %.2f%\nTunel AC: %.2f %\nTunel BC: %.2f %\nEl total de autos que pasaron fue: %.0f\n", monitor_tunel[0].contador/totalautos*100,(monitor_tunel[1].contador/totalautos*100),(monitor_tunel[2].contador/totalautos*100),totalautos);
 
 
     pthread_mutex_destroy(&monitor_tunel[0].mutex);
